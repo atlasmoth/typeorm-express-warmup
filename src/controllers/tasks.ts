@@ -36,3 +36,18 @@ export const createTask = HandleError(async (req, res) => {
 
   res.send({ success: true, task });
 });
+
+export const updateTask = HandleError(async (req, res) => {
+  const task = await TaskRepository.findOneBy({ id: req.body.id });
+  if (!task) {
+    throw new Error("Invalid task id");
+  }
+  task.description = req.body.description || task.description;
+  task.title = req.body.title || task.title;
+  task.priority = req.body.priority || task.priority;
+  task.status = req.body.status || task.status;
+
+  await TaskRepository.save(task);
+
+  res.status(201).send({ success: true, task });
+});
